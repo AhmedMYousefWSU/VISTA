@@ -1,0 +1,98 @@
+# MIRROR Attack — UBMB + adaptive top-K + MI-FGSM hybrid config
+
+defaults:
+  - _self_
+
+data:
+  batch_size: 1
+  num_samples: 100
+  output: "./mirror_attack_output"
+  cle_data_path: "resources/images/clean"
+  tgt_data_path: "resources/images/target"
+
+optim:
+  alpha: 1.0
+  epsilon: 16
+  steps: 300
+  warmup_steps: 50
+
+  
+  attack_method: mifgsm          
+  global_loss_weight: 0.0        
+  use_momentum: true
+  momentum_decay: 0.9
+
+  target_refresh_every: 1          
+  surrogate_sample_ratio: 1.0      
+
+  use_adaptive_gw: true            
+  adaptive_gw_ema: 0.9            
+  adaptive_gw_blend: 0.5          
+
+  use_paradigm_curriculum: true   
+  paradigm_curriculum_strength: 1.0  
+  patch_ot_weight: 0.1            
+
+  use_input_diversity: true       
+  dim_prob: 0.5
+  dim_resize_range: [0.8, 1.0]
+
+  use_ti_grad: true
+  ti_kernel_size: 5
+  ti_sigma: 1.0
+
+  use_scale_invariant: true
+  si_scales: [1.0, 0.75, 0.5]
+
+model:
+  input_res: 224
+  use_source_crop: false           
+  use_target_crop: false           
+  ensemble: true
+  device: "cuda:0"
+
+  backbone:
+    - "L336"
+    - "B16"
+    - "B32"
+    - "Laion"
+    - "clip_laion_h14"
+    - "dino_base"
+    - "internvl3"
+    - "siglip2_b16"
+    - "siglip2_g16"
+
+  topk_patches: 64
+  topk_patches_min: 10
+  adaptive_topk_ubmb: true
+  topk_ubmb_aggregate: "mean"
+  ubmb_token_topk: true
+  ubmb_topk_blend: 0.65
+  ubmb_topk_box_score: "product"
+  patch_weight_temperature: 0.4
+  attention_similarity_blend: 1.0
+
+  
+  target_copy_enable: true
+  target_copy_min_weight: 0.08
+  target_copy_weight: 2.0
+  target_copy_project_blend: 0.55
+
+  target_inject_enable: false
+  target_inject_ratio: 0.35
+  target_inject_blend: 0.50
+  target_inject_px_weight: 0.0
+
+attack:
+  name: "MIRROR"
+  source_label: ""
+  target_label: ""
+  mask_mode: "gray"                
+
+wandb:
+  project: "local_adversarial_attack"
+
+blackbox:
+  model_name: "qwen"
+  api_keys_file: "api_keys.yaml"
+  max_completion_tokens: 1024
