@@ -192,3 +192,10 @@ wandb login
 **`OpenAI API key not found`** — export `OPENAI_API_KEY` or add the key to `api_keys.yaml`.
 
 **`salesforce-lavis` install fails** — install build tools first: `conda install -c conda-forge gcc gxx`.
+
+## Acknowledgements
+
+This project builds on the following prior works. We sincerely thank the authors for their outstanding contributions:
+
+- **[M-Attack](https://github.com/VILA-Lab/M-Attack)** — the foundational surrogate-ensemble adversarial attack framework that MIRROR extends.
+- **[FOA-Attack](https://github.com/jiaxiaojunQAQ/FOA-Attack)** — *Adversarial Attacks against Closed-Source MLLMs via Feature Optimal Alignment* (NeurIPS 2025), whose optimal-transport feature alignment loss is integrated into MIRROR's surrogate ensemble.
